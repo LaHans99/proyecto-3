@@ -1,0 +1,299 @@
+#include <iostream>
+using namespace std;
+#include <fstream>
+#include <string>
+#include "Fecha.h"
+#include "Material.h"
+#include "Reserva.h"
+#include "Disco.h"
+#include "Libro.h"
+#include "Software.h"
+
+int main() {
+//(abrire reserva y materiales) Escribe ahora un programa que tenga un arreglo de apuntadores a objetos de tipo Material (con un máximo de 30 elementos) y un arreglo de Reservaciones (con un máximo de 60 elementos).
+ifstream archivoEntradaMaterial;
+archivoEntradaMaterial.open("material.txt");
+
+//variables   hay mas pero tengo que ver si son string o int para definirlas aqui
+string materialId, titulo, tipo, numero, cuarto;
+
+//clase abstracta, agarramos la lista de apuntadores
+Material** material = new Material*[30];
+
+int contmaterial = 0; 
+string lineamaterial;
+int posicionmaterial;
+
+Disco discoAux;
+Libro libroAux;
+Software softAux;
+
+
+while (archivoEntradaMaterial >> materialId >> titulo >> tipo >> numero >> cuarto)
+{
+	if(tipo == "L"){
+		libroAux.setidMaterial(stoi(materialId));
+		libroAux.settitulo(titulo);
+		libroAux.setnumPag(stoi(numero));
+		libroAux.setautor(cuarto);
+		*material[contmaterial] = libroAux;
+	}
+	else if(tipo == "D"){
+		discoAux.setidMaterial(stoi(materialId));
+		discoAux.settitulo(titulo);
+		discoAux.setduracion(stoi(numero));
+		discoAux.setGenero(cuarto);
+		*material[contmaterial] = discoAux;
+	}
+	else{
+		softAux.setidMaterial(stoi(materialId));
+		softAux.settitulo(titulo);
+		softAux.setversion(stoi(numero));
+		softAux.setsoft(cuarto);
+		*material[contmaterial] = softAux;
+	}
+	contmaterial++;
+}
+
+
+
+//va a leer la lista de material 
+//SHUERK no se donde poner como va a identificar si es libro disco o software. o maybe le puedo preguntar primero al usuario idk. abajo puse ifs para identificar eso mas no se si este bien
+
+//YA ME CONFUNDI ALV.  
+/*
+while(getline(archivoEntradaMaterial,lineamaterial))
+{
+    posicionmaterial=lineamaterial.find(" ");
+    material[contmaterial].setidMaterial(stoi(lineamaterial.substr(0,posicionmaterial)));
+    lineamaterial.erase(0,posicionmaterial + 1);
+
+    posicionmaterial=lineamaterial.find(" ");
+    material[contmaterial].settitulo(stoi(lineamaterial.substr(posicionmaterial + 1)));
+    lineamaterial.erase(0,posicionmaterial + 1);
+
+
+
+    //aqui quiero poner un if (setclave = d)  es disco.  if (setclave = s) es software y asi.
+    //SHUERK me falta poner el tributo clave pero no se en que clase ponerlo (lo pondre en materlia.h)
+    posicionmaterial=lineamaterial.find(" ");
+    material[contmaterial].setclave(stoi(lineamaterial.substr(posicionmaterial + 1)));
+    lineamaterial.erase(0,posicionmaterial + 1);
+
+    if (material[contmaterial].getclave() = 'L')
+    {
+        posicionmaterial=lineamaterial.find(" ");
+        Libro[contmaterial].setnumPag(stoi(lineamaterial.substr(posicionmaterial + 1)));
+        lineamaterial.erase(0,posicionmaterial + 1);
+
+        posicionmaterial=lineamaterial.find(" ");
+        Libro[contmaterial].setautor(stoi(lineamaterial.substr(posicionmaterial + 1)));
+        lineamaterial.erase(0,posicionmaterial + 1);
+    }
+    if (material[contmaterial].setclave = 'D')
+    {
+        posicionmaterial=lineamaterial.find(" ");
+        Disco[contmaterial].setduracion(stoi(lineamaterial.substr(posicionmaterial + 1)));
+        lineamaterial.erase(0,posicionmaterial + 1);
+
+        posicionmaterial=lineamaterial.find(" ");
+        Disco[contmaterial].setgenero(stoi(lineamaterial.substr(posicionmaterial + 1)));
+        lineamaterial.erase(0,posicionmaterial + 1);
+    }
+    if (material[contmaterial].setclave = 'S')
+    {
+        posicionmaterial=lineamaterial.find(" ");
+        Software[contmaterial].setversion(stoi(lineamaterial.substr(posicionmaterial + 1)));
+        lineamaterial.erase(0,posicionmaterial + 1);
+
+        posicionmaterial=lineamaterial.find(" ");
+        Software[contmaterial].setsoft(stoi(lineamaterial.substr(posicionmaterial + 1)));
+        lineamaterial.erase(0,posicionmaterial + 1);
+    }
+    contmaterial++;
+}
+*/
+
+
+/*Carga los datos para el arreglo de Reservaciones de un archivo de texto llamado “Reserva.txt” que contiene en cada renglón el día, mes y año de la fecha de inicio de la reserva, el id del material y el id del cliente.
+Formato:
+dd mm aa idMaterial idCliente
+Hay archivos de ejemplo para material y reservaciones en Blackboard. Pero también debes crear tus propios archivos de prueba.*/
+
+ifstream archivoEntradaReserva;
+archivoEntradaReserva.open("reserva.txt");
+
+
+Reserva reserva[60];
+int cont = 0;
+string lineareserva;
+
+int dd, mm, aa, idMaterial, idCliente;
+Fecha fechaAux;
+
+while(archivoEntradaReserva >> dd >> mm >> aa >> idMaterial >> idCliente)
+{
+	fechaAux.setfecha(dd, mm, aa);
+	reserva[cont].setfechaReservacion(fechaAux);
+	reserva[cont].setidMaterial(idMaterial);
+	reserva[cont].setidCliente(idCliente);
+	cont++;
+}
+
+
+/*
+posreserva = lineamaterial.find(" ");
+    //Fecha.h
+    reserva[contreserva].setdd(stoi(lineareserva.substr(0,posreserva)));
+    lineareserva.erase(0,posreserva +1);
+
+    posreserva = lineamaterial.find(" ");
+    //Fecha.h
+    reserva[contreserva].setmm(stoi(lineareserva.substr(0,posreserva)));
+    lineareserva.erase(0,posreserva +1);
+
+      posreserva = lineamaterial.find(" ");
+    //Fecha.h
+    reserva[contreserva].setaa(stoi(lineareserva.substr(0,posreserva)));
+    lineareserva.erase(0,posreserva +1);
+
+      posreserva = lineamaterial.find(" ");
+    //Fecha.h
+    reserva[contreserva].setidMaterial(stoi(lineareserva.substr(0,posreserva)));
+    lineareserva.erase(0,posreserva +1);
+
+      posreserva = lineamaterial.find(" ");
+    //Fecha.h
+    reserva[contreserva].setCLiente(stoi(lineareserva.substr(0,posreserva)));
+    lineareserva.erase(0,posreserva +1);
+*/
+
+
+//menu y leer 
+	char opcion;
+	Fecha fecha;
+	int intAux1, intAux2;
+	bool reservacion;
+	while( opcion != 'f')
+	{
+	
+		cout<<"a. Consultar la lista de Materiales" <<endl;
+		cout<<"b. Consultar la lista de reservaciones" <<endl;
+		cout<<"c. Consultar las reservaciones de un material dado"<<endl;
+		cout<<"d. Consultar las reservaciones de una fecha dada"<<endl;
+		cout<<"e. Hacer una reservación"<<endl;
+		cout<<"f. Terminar"<<endl;
+
+		cin >> opcion;
+			switch (opcion) 
+			{
+                //lista de apuntadores (->)
+/* a. Consultar la lista de Materiales. Que muestre todos los datos de cada material.*/
+				case 'a' : 
+				for(int i = 0; i < contmaterial; i++){
+					material[i]->muestraDatos();
+				}
+				break;
+/*b. Consultar la lista de reservaciones, al hacerlo deberás mostrar la fecha en la que inicia la reservación, la fecha en la que termina la reservación, el nombre del material y el id del cliente.*/
+				case 'b' :
+				for(int i = 0; i < cont; i++){
+					cout << "Fecha de inicio de reserva: ";
+					fecha = reserva[i].getfechaReservacion();
+					cout << fecha << endl;
+                    
+					for(int j = 0; j < contmaterial; j++){
+						if(reserva[i].getidMaterial() == material[j]->getidMaterial()){
+							fecha = reserva[i].getfechaReservacion() + material[j]->cantidadDiasPrestamo();
+						}
+					}
+					cout << "Fecha final de reservacion: ";
+					cout << fecha << endl;
+					cout << "Nombre del material: ";
+					for(int j = 0; j < contmaterial; j++){
+						if(reserva[i].getidMaterial() == material[j]->getidMaterial()){
+							cout << material[j]->gettitulo() << endl;;
+						}
+					}
+					cout << "Id del cliente: " << reserva[i].getidCliente() << endl;
+				}
+				break;
+/* c. Consultar las reservaciones de un material dado, que muestre para cada reservación el nombre del material, su fecha de inicio de reservación y su fecha de terminación.*/
+				case 'c' : 
+				cout << "Teclee el id del material que desee buscar" << endl;
+				cin >> intAux1;
+				for(int i = 0; i < cont; i++){
+					if (intAux1 == reserva[i].getidMaterial()){
+						for(int j = 0; j < contmaterial; j++){
+							if(intAux1 == material[j]->getidMaterial()){
+								cout << "Titulo del material: ";
+								cout << material[j]->gettitulo() << endl;
+
+								cout << "Fecha en el que se reservo: ";
+								fecha = reserva[i].getfechaReservacion();
+								cout << fecha << endl;
+
+								cout << "Fecha en la que se acaba la reserva: ";
+								fecha = reserva[i].getfechaReservacion() + material[j]->cantidadDiasPrestamo();
+								cout << fecha << endl;
+							}
+						}
+					}
+				}
+				break;
+/* d. Consultar las reservaciones de una fecha dada, que muestre la lista de los materiales que se encuentren reservados en la fecha dada. Debe mostrar el nombre del material y el id del cliente. Tienes que revisar el rango de fechas de cada reservación para verificar si el material está reservado o no en una fecha dada.*/
+				case 'd' : 
+				cout << "Teclee fecha que desee checar" << endl;
+				cin >> fecha;
+				for(int i = 0; i < cont; i++){
+					if(fecha == reserva[i].getfechaReservacion()){
+						cout << "Nombre del material: ";
+						for(int j = 0; j < contmaterial; j++){
+							if(reserva[i].getidMaterial() == material[j]->getidMaterial()){
+								cout << material[j]->gettitulo() << endl;
+							}
+						}
+						cout << "Id del cliente: " << reserva[i].getidCliente() << endl;
+					}
+				}
+				break;
+/* e. Hacer una reservación, en esta opción pregunta al usuario el id del cliente y del material, así como la fecha en que desea reservar. El programa validará que el id del material sea válido y que el material esté disponible en esa fecha (o sea debe revisar las reservaciones existentes) y en caso de que sí se pueda, se reservará.*/
+				case 'e' : 
+				cout << "teclee el id del material" << endl;
+				cin >> intAux1;
+				for (int i = 0; i < contmaterial; i++){
+					if(material[i]->getidMaterial() == intAux1){
+						cout << "Teclee el id del cliente" << endl;
+						cin >> intAux2;
+						cout << "teclee la fecha en la que reservara el material" << endl;
+						cin >> fecha;
+						reservacion = true;
+						for (int j = 0; j < cont; j++){
+							if (fecha == reserva[i].getfechaReservacion()){
+								reservacion = false;
+								break;
+							}
+						}
+						if(reservacion){
+							reserva[cont + 1].setidMaterial(intAux1);
+							reserva[cont + 1].setidCliente(intAux2);
+							reserva[cont + 1].setfechaReservacion(fecha);
+							cont++;
+						}
+						else{
+							cout << "La fecha no esta disponible" << endl;
+						}
+					}
+					else{
+						cout << "Este material no existe" << endl;
+					}
+				}
+				break;
+/* f. Terminar. Al ejecutar esta opción se debe actualizar la información del archivo de reservaciones de manera que se conserve la información para la siguiente vez que se ejecute el programa*/
+				case 'f' : 
+				cout <<"bye"<<endl;
+				return 0;
+				delete [] material;
+				break;
+			}    
+	}
+}
